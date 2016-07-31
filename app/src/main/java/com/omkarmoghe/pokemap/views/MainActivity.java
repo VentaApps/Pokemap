@@ -1,11 +1,13 @@
 package com.omkarmoghe.pokemap.views;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -15,11 +17,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.omkarmoghe.pokemap.R;
 import com.omkarmoghe.pokemap.controllers.service.PokemonNotificationService;
 import com.omkarmoghe.pokemap.helpers.MapHelper;
+import com.omkarmoghe.pokemap.helpers.RevMobHelperClass;
 import com.omkarmoghe.pokemap.models.events.ClearMapEvent;
 import com.omkarmoghe.pokemap.models.events.InternalExceptionEvent;
 import com.omkarmoghe.pokemap.models.events.LoginEventResult;
@@ -68,6 +72,22 @@ public class MainActivity extends BaseActivity {
         themeId = sharedPref.getInt(getString(R.string.pref_theme_no_action_bar), R.style.AppTheme_NoActionBar);
         setTheme(themeId);
         setContentView(R.layout.activity_main);
+
+
+        // Rev Mob
+        final Activity activity = this;
+        LinearLayout outerLayout = (LinearLayout)findViewById(R.id.outer);
+        LinearLayout layout = (LinearLayout)outerLayout.findViewById(R.id.banner);
+        RevMobHelperClass.getSharedInstance().startBannerAds(this, layout);
+        final Handler h = new Handler();
+        final int delay = 2*60*1000; //2 minutes
+        h.postDelayed(new Runnable() {
+            public void run() {
+                RevMobHelperClass.getSharedInstance().startFSAds(activity);
+                h.postDelayed(this, delay);
+            }
+        }, delay);
+
 
         pref = new PokemapSharedPreferences(this);
 
